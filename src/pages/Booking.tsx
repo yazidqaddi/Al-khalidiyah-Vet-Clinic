@@ -28,11 +28,15 @@ export default function Booking() {
 
   // HANDLE INPUT
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const { name, value } = e.target;
+
+  setFormData({
+    ...formData,
+    [name]: name === "date"
+      ? new Date(value).toISOString().split("T")[0]
+      : value
+  });
+};
 
   // FETCH AVAILABLE TIMES
   const fetchAvailableSlots = async (selectedDate: string) => {
@@ -40,10 +44,13 @@ export default function Booking() {
       const res = await fetch("https://script.google.com/macros/s/AKfycbwdCYeAKN_XQpkoJBGJlQZGOHiYNmNWmebt6L0m6wtOTRJoEzqEsTJxU9isX8XDEsT_vg/exec");
       const booked = await res.json();
 
-      const bookedForDate = booked
-        .filter((b: any) => b.date === selectedDate)
-        .map((b: any) => b.time);
-
+     const normalize = (d: string) => {
+  if (!d) return "";
+  return String(d).split("T")[0].trim();
+}
+const bookedForDate = booked
+  .filter((b: any) => normalize(b.date) === normalize(selectedDate))
+  .map((b: any) => b.time);
       const available = allSlots.filter(
         (slot) => !bookedForDate.includes(slot)
       );
