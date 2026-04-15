@@ -62,15 +62,22 @@ const bookedForDate = booked
   };
 
   // SUBMIT FORM
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await fetch("https://script.google.com/macros/s/AKfycbwdCYeAKN_XQpkoJBGJlQZGOHiYNmNWmebt6L0m6wtOTRJoEzqEsTJxU9isX8XDEsT_vg/exec", {
-        method: "POST",
-        body: JSON.stringify(formData)
-      });
+ const handleSubmit = async () => {
+  await fetch("YOUR_SCRIPT_URL", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      date: formData.date,
+      time: formData.time,
+      reason: formData.reason
+    })
+  });
+};
 
       // WHATSAPP MESSAGE
       const message = `Hello Al Khalidiya Vet Clinic,
